@@ -1,0 +1,16 @@
+namespace: backend
+
+deployment:
+  replicas: 3
+  image:
+    repository: docker.io/vumnikov/backend
+    tag: "1.28.1"
+  containerPort: 80
+
+imagePullSecrets:
+  create: false
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 80
