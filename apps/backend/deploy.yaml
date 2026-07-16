@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: backend
-          image: nginx:1.28.1
+          image: nginks:1.29.4
           ports:
             - containerPort: 80
