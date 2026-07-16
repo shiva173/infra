@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backend2
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: git@github.com:shiva173/infra.git
+    targetRevision: main
+    path: apps/backend
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: backend2
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
