@@ -1,0 +1,13 @@
+config: 
+  git.user: "image-updater-bot"
+
+  git.email: "image-updater@example.com"
+
+  git.commit-message-template: |
+    chore({{ .AppName }}): update image to {{ (index .AppChanges 0).NewTag }}  
+
+  registries:
+    - name: Docker Hub
+      api_url: https://registry-1.docker.io
+      credentials: pullsecret:argocd/argocd-image-updater-backend
+      prefix: docker.io
