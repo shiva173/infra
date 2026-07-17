@@ -6,3 +6,15 @@ metadata:
 data:
   service.telegram: |
     token: $telegram-token
+
+  trigger.on-sync-succeeded: |
+    - when: app.status.operationState.phase == 'Succeeded'
+              && app.status.health.status in ['Healthy', nil]
+      oncePer: app.status.sync.revision
+  
+  trigger.on-sync-failed: |
+    - when: app.status.operationState.phase in ['Failed', 'Error']
+      oncePer: app.status.sync.revision
+
+  trigger.on-health-degraded: |
+    - when: app.status.health.status == 'Degraded'
