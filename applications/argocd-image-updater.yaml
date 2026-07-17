@@ -16,6 +16,7 @@ spec:
         valueFiles:
           - values.yaml
           - custom-values.yaml
+
     - repoURL: git@github.com:shiva173/infra.git
       targetRevision: main
       path: apps/argocd-image-updater/extra
