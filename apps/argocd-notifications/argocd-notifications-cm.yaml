@@ -7,14 +7,70 @@ data:
   service.telegram: |
     token: $telegram-token
 
+  subscriptions: |
+    - recipients:
+        - telegram:-1003796356584|2
+      triggers:
+        - on-sync-succeeded
+        - on-sync-failed
+        - on-health-degraded
+
   trigger.on-sync-succeeded: |
     - when: app.status.operationState.phase == 'Succeeded'
               && app.status.health.status in ['Healthy', nil]
       oncePer: app.status.sync.revision
-  
+      send:
+        - on-sync-succeeded
+
   trigger.on-sync-failed: |
     - when: app.status.operationState.phase in ['Failed', 'Error']
       oncePer: app.status.sync.revision
+      send:
+        - on-sync-failed
 
   trigger.on-health-degraded: |
     - when: app.status.health.status == 'Degraded'
+      send:
+        - on-health-degraded
+
+  template.on-sync-succeeded: |
+    message: |
+      🔗 [ArgoCD](http://argo.cd/applications/{{ .app.metadata.name }})
+
+      ✅ *Синхронизация успешна*
+
+      *Приложение:* {{ .app.metadata.name }}
+      *Ревизия:* {{ .app.status.sync.revision }}
+
+      *Автор коммита:* {{ (call .repo.GetCommitMetadata .app.status.sync.revision).Author }}
+      *Описание коммита:* {{ (call .repo.GetCommitMetadata .app.status.sync.revision).Message }}
+
+      📦 [Ссылка на коммит в Git]({{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL | trimSuffix ".git" }}/commit/{{ .app.status.sync.revision }})
+
+  template.on-sync-failed: |
+    message: |
+      🔗 [ArgoCD](http://argo.cd/applications/{{ .app.metadata.name }})
+
+      ❌ *Ошибка синхронизации*
+
+      *Приложение:* {{ .app.metadata.name }}
+      *Ревизия:* {{ .app.status.sync.revision }}
+
+      *Автор коммита:* {{ (call .repo.GetCommitMetadata .app.status.sync.revision).Author }}
+      *Описание коммита:* {{ (call .repo.GetCommitMetadata .app.status.sync.revision).Message }}
+
+      📦 [Ссылка на коммит в Git]({{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL | trimSuffix ".git" }}/commit/{{ .app.status.sync.revision }})
+
+  template.on-health-degraded: |
+    message: |
+      🔗 [ArgoCD](http://argo.cd/applications/{{ .app.metadata.name }})
+  
+      🚨 *Приложение в состоянии DEGRADED*
+  
+      *Приложение:* {{ .app.metadata.name }}
+      *Ревизия:* {{ .app.status.sync.revision }}
+  
+      *Автор коммита:* {{ (call .repo.GetCommitMetadata .app.status.sync.revision).Author }}
+      *Описание коммита:* {{ (call .repo.GetCommitMetadata .app.status.sync.revision).Message }}
+  
+      📦 [Ссылка на коммит в Git]({{ call .repo.RepoURLToHTTPS .app.spec.source.repoURL | trimSuffix ".git" }}/commit/{{ .app.status.sync.revision }})
