@@ -12,6 +12,10 @@ spec:
     repoURL: git@github.com:shiva173/infra.git
     targetRevision: main
     path: apps/backend
+    helm:
+      valueFiles:
+        - values.yaml
+        - secrets.yaml
 
   destination:
     server: https://kubernetes.default.svc
