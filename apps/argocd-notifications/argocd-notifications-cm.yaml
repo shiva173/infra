@@ -9,7 +9,7 @@ data:
 
   subscriptions: |
     - recipients:
-        - telegram:-1003796356584|2
+        - telegram:-100379635545343|2
       triggers:
         - on-sync-succeeded
         - on-sync-failed
