@@ -1,0 +1,30 @@
+global:
+  domain: argo.cd
+
+server:
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+
+configs:
+  params:
+    server.insecure: "true"
+
+repoServer:
+  image:
+    repository: "vumnikov/infra"
+    tag: "argocd-helm-sops-v3.2.5"
+
+  env:
+    - name: SOPS_AGE_KEY_FILE
+      value: /sops-keys/keys.txt
+
+  volumeMounts:
+    - name: sops-keys
+      mountPath: /sops-keys
+      readOnly: true
+
+  volumes:
+    - name: sops-keys
+      secret:
+        secretName: sops-keys

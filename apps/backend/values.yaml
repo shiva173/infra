@@ -5,9 +5,15 @@ deployment:
     repository: docker.io/vumnikov/backend
     tag: "3.0.0"
   containerPort: 80
+
 imagePullSecrets:
-  create: false
+  create: true
+  registry: ""
+  username: ""
+  password: ""
+
 service:
   type: ClusterIP
   port: 8080
   targetPort: 80
+
